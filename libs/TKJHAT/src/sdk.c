@@ -553,6 +553,11 @@ uint32_t veml6030_read_light() {
     //            Kerro arvo sopivalla kertoimella huomioiden 100 ms integraatioaika ja vahvistus 1/8
     //            käyttäen VEML6030-datalehden sivun 5 tietoja.
     //            Lopuksi tallenna arvo muuttujaan luxVal_uncorrected.
+    uint8_t buffer_write[1] = {};
+    uint8_t buffer_read[2];
+    i2c_write_blocking (i2c_default, VEML6030_I2C_ADDR, &buffer_write, 1, true);
+    i2c_read_blocking (i2c_default, VEML6030_I2C_ADDR, &buffer_read, 2, false);
+   
   
     uint32_t luxVal_uncorrected = 0; 
     if (luxVal_uncorrected>1000){
