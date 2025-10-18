@@ -21,7 +21,7 @@
 
 // Tehtävä 3: Tilakoneen esittely Add missing states.
 // Exercise 3: Definition of the state machine. Add missing states.
-enum state { WAITING=1};
+enum state { WAITING=1, DATA_READY};
 enum state programState = WAITING;
 
 // Tehtävä 3: Valoisuuden globaali muuttuja
@@ -46,13 +46,20 @@ static void sensor_task(void *arg){
     for(;;){
         
         // Tehtävä 2: Muokkaa tästä eteenpäin sovelluskoodilla. Kommentoi seuraava rivi.
-        //             
+        // tight_loop_contents();             
         // Exercise 2: Modify with application code here. Comment following line.
         //             Read sensor data and print it out as string; 
-        ambientLight = veml6030_read_light();
-        printf("Ambient Light: %lu lux\n", ambientLight);
+        if (programState == WAITING) {
+        
+            // Tilan toiminnallisuus
+            ambientLight = veml6030_read_light();
+            // Tilasiirtymä
+            programState = DATA_READY;				        
+        }
+        
+        //printf("Ambient Light: %lu lux\n", ambientLight);
 
-        // tight_loop_contents(); 
+        // 
 
 
 
@@ -70,7 +77,7 @@ static void sensor_task(void *arg){
         
         // Exercise 2. Just for sanity check. Please, comment this out
         // Tehtävä 2: Just for sanity check. Please, comment this out
-        // printf("sensorTask\n");
+        printf("sensorTask\n");
 
         // Do not remove this
         vTaskDelay(pdMS_TO_TICKS(1000));
@@ -88,7 +95,16 @@ static void print_task(void *arg){
         // Exercise 3: Print out sensor data as string to debug window if the state is correct
         //             Remember to modify state
         //             Do not forget to comment next line of code.
-        tight_loop_contents();
+        //tight_loop_contents();
+
+        if (programState == DATA_READY) {
+        
+            // Tilan toiminnallisuus
+            printf("Ambient Light: %lu lux\n", ambientLight);
+            
+            // Tilasiirtymä UPDATE -> IDLE
+            programState = WAITING;				        
+        }
         
 
 
@@ -117,7 +133,7 @@ static void print_task(void *arg){
         printf("printTask\n");
         
         // Do not remove this
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
 
