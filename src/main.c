@@ -42,7 +42,7 @@ static void sensor_task(void *arg){
     // Tehtävä 2: Alusta valoisuusanturi. Etsi SDK-dokumentaatiosta sopiva funktio.
     // Exercise 2: Init the light sensor. Find in the SDK documentation the adequate function.
     init_veml6030();
-   
+    
     for(;;){
         
         // Tehtävä 2: Muokkaa tästä eteenpäin sovelluskoodilla. Kommentoi seuraava rivi.
@@ -50,18 +50,11 @@ static void sensor_task(void *arg){
         // Exercise 2: Modify with application code here. Comment following line.
         //             Read sensor data and print it out as string; 
         if (programState == WAITING) {
-        
-            // Tilan toiminnallisuus
             ambientLight = veml6030_read_light();
-            // Tilasiirtymä
             programState = DATA_READY;				        
         }
         
         //printf("Ambient Light: %lu lux\n", ambientLight);
-
-        // 
-
-
 
 
         // Tehtävä 3:  Muokkaa aiemmin Tehtävässä 2 tehtyä koodia ylempänä.
@@ -77,7 +70,7 @@ static void sensor_task(void *arg){
         
         // Exercise 2. Just for sanity check. Please, comment this out
         // Tehtävä 2: Just for sanity check. Please, comment this out
-        printf("sensorTask\n");
+        //printf("sensorTask\n");
 
         // Do not remove this
         vTaskDelay(pdMS_TO_TICKS(1000));
@@ -99,10 +92,7 @@ static void print_task(void *arg){
 
         if (programState == DATA_READY) {
         
-            // Tilan toiminnallisuus
             printf("Ambient Light: %lu lux\n", ambientLight);
-            
-            // Tilasiirtymä UPDATE -> IDLE
             programState = WAITING;				        
         }
         
@@ -133,7 +123,7 @@ static void print_task(void *arg){
         printf("printTask\n");
         
         // Do not remove this
-        vTaskDelay(pdMS_TO_TICKS(500));
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
@@ -166,13 +156,12 @@ int main() {
     stdio_init_all();
 
     // Uncomment this lines if you want to wait till the serial monitor is connected
-    /*while (!stdio_usb_connected()){
+    while (!stdio_usb_connected()){
         sleep_ms(10);
-    }*/ 
+    }
     
     init_hat_sdk();
-    sleep_ms(300); //Wait some time so initialization of USB and hat is done.
-
+    sleep_ms(500); //Wait some time so initialization of USB and hat is done.
     // Exercise 1: Initialize the button and the led and define an register the corresponding interrupton.
     //             Interruption handler is defined up as btn_fxn
     // Tehtävä 1:  Alusta painike ja LEd ja rekisteröi vastaava keskeytys.
